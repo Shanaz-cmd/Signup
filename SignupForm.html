@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Form Validation</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Custom CSS -->
+  <style>
+    body {
+      background: linear-gradient(135deg, #6a11cb, #2575fc);
+      font-family: 'Poppins', sans-serif;
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0;
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 15px;
+      padding: 30px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      max-width: 500px;
+      width: 100%;
+      animation: fadeIn 1s ease-in-out;
+    }
+
+    h1 {
+      text-align: center;
+      font-weight: 700;
+      margin-bottom: 20px;
+      color: #fff;
+    }
+
+    .form-label {
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .form-control {
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      border-radius: 10px;
+      color: #fff;
+      padding: 10px;
+      transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+      background: rgba(255, 255, 255, 0.3);
+      box-shadow: none;
+      border: none;
+    }
+
+    .btn-primary {
+      background: #2575fc;
+      border: none;
+      border-radius: 10px;
+      padding: 10px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      width: 100%;
+    }
+
+    .btn-primary:hover {
+      background: #6a11cb;
+    }
+
+    .invalid-feedback {
+      color: #ff6b6b;
+      font-weight: 500;
+    }
+
+    .is-invalid {
+      border: 2px solid #ff6b6b !important;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Sign Up</h1>
+    <form id="signupForm" class="needs-validation" novalidate>
+      <!-- Full Name -->
+      <div class="mb-3">
+        <label for="fullName" class="form-label">Full Name</label>
+        <input type="text" class="form-control" id="fullName" required>
+        <div class="invalid-feedback">Name must be at least 5 characters long.</div>
+      </div>
+      <!-- Email ID -->
+      <div class="mb-3">
+        <label for="email" class="form-label">Email ID</label>
+        <input type="email" class="form-control" id="email" required>
+        <div class="invalid-feedback">Please enter a valid email address.</div>
+      </div>
+      <!-- Phone Number -->
+      <div class="mb-3">
+        <label for="phone" class="form-label">Phone Number</label>
+        <input type="text" class="form-control" id="phone" required>
+        <div class="invalid-feedback">Please enter a valid 10-digit phone number.</div>
+      </div>
+      <!-- Password -->
+      <div class="mb-3">
+        <label for="password" class="form-label">Password</label>
+        <input type="password" class="form-control" id="password" required>
+        <div class="invalid-feedback">Password must be at least 8 characters long and cannot be "password" or your name.</div>
+      </div>
+      <!-- Confirm Password -->
+      <div class="mb-3">
+        <label for="confirmPassword" class="form-label">Confirm Password</label>
+        <input type="password" class="form-control" id="confirmPassword" required>
+        <div class="invalid-feedback">Passwords do not match.</div>
+      </div>
+      <!-- Submit Button -->
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Custom JS -->
+  <script>
+    // Function to validate Full Name
+    function validateName(name) {
+      return name.length >= 5;
+    }
+
+    // Function to validate Email
+    function validateEmail(email) {
+      return email.includes('@');
+    }
+
+    // Function to validate Phone Number
+    function validatePhone(phone) {
+      return phone.length === 10 && !isNaN(phone) && phone !== '123456789';
+    }
+
+    // Function to validate Password
+    function validatePassword(password, fullName) {
+      return (
+        password.length >= 8 &&
+        password !== 'password' &&
+        password !== fullName
+      );
+    }
+
+    // Function to check if Passwords match
+    function validateConfirmPassword(password, confirmPassword) {
+      return password === confirmPassword;
+    }
+
+    // Function to display validation errors
+    function showError(input, message) {
+      input.classList.add('is-invalid');
+      input.nextElementSibling.textContent = message;
+    }
+
+    // Function to clear validation errors
+    function clearError(input) {
+      input.classList.remove('is-invalid');
+      input.nextElementSibling.textContent = '';
+    }
+
+    // Event Listener for Form Submission
+    document.getElementById('signupForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      // Get form inputs
+      const fullName = document.getElementById('fullName').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+      const password = document.getElementById('password').value.trim();
+      const confirmPassword = document.getElementById('confirmPassword').value.trim();
+
+      // Clear previous errors
+      clearError(document.getElementById('fullName'));
+      clearError(document.getElementById('email'));
+      clearError(document.getElementById('phone'));
+      clearError(document.getElementById('password'));
+      clearError(document.getElementById('confirmPassword'));
+
+      // Validate inputs
+      let isValid = true;
+
+      if (!validateName(fullName)) {
+        showError(document.getElementById('fullName'), 'Name must be at least 5 characters long.');
+        isValid = false;
+      }
+
+      if (!validateEmail(email)) {
+        showError(document.getElementById('email'), 'Please enter a valid email address.');
+        isValid = false;
+      }
+
+      if (!validatePhone(phone)) {
+        showError(document.getElementById('phone'), 'Please enter a valid 10-digit phone number.');
+        isValid = false;
+      }
+
+      if (!validatePassword(password, fullName)) {
+        showError(document.getElementById('password'), 'Password must be at least 8 characters long and cannot be "password" or your name.');
+        isValid = false;
+      }
+
+      if (!validateConfirmPassword(password, confirmPassword)) {
+        showError(document.getElementById('confirmPassword'), 'Passwords do not match.');
+        isValid = false;
+      }
+
+      // If all validations pass, submit the form
+      if (isValid) {
+        alert('Form submitted successfully!');
+        // You can add code here to submit the form data to a server
+      }
+    });
+
+    // Event Listeners for onChange (optional)
+    document.getElementById('fullName').addEventListener('input', function () {
+      clearError(this);
+    });
+
+    document.getElementById('email').addEventListener('input', function () {
+      clearError(this);
+    });
+
+    document.getElementById('phone').addEventListener('input', function () {
+      clearError(this);
+    });
+
+    document.getElementById('password').addEventListener('input', function () {
+      clearError(this);
+    });
+
+    document.getElementById('confirmPassword').addEventListener('input', function () {
+      clearError(this);
+    });
+  </script>
+</body>
+</html>
